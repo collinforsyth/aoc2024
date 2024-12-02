@@ -3,6 +3,7 @@ package main
 import (
 	"bufio"
 	"fmt"
+	"io"
 	"os"
 	"slices"
 	"strings"
@@ -17,11 +18,7 @@ func main() {
 		return
 	}
 	defer input.Close()
-	l1, l2, err := parseInput(input)
-	if err != nil {
-		fmt.Println(err)
-		return
-	}
+	l1, l2 := parseInput(input)
 	if err := partOne(l1, l2); err != nil {
 		fmt.Println(err)
 		return
@@ -33,7 +30,7 @@ func main() {
 
 }
 
-func parseInput(inputFile *os.File) ([]int, []int, error) {
+func parseInput(inputFile io.Reader) ([]int, []int) {
 	sc := bufio.NewScanner(inputFile)
 	l1 := make([]int, 0)
 	l2 := make([]int, 0)
@@ -43,7 +40,7 @@ func parseInput(inputFile *os.File) ([]int, []int, error) {
 		l1 = append(l1, n1)
 		l2 = append(l2, n2)
 	}
-	return l1, l2, nil
+	return l1, l2
 }
 
 func partOne(l1, l2 []int) error {
