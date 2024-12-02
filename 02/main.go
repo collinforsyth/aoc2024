@@ -71,11 +71,11 @@ func isSafe(levels []int, toleration int) bool {
 	}
 	badLevelCount := 0
 	for i := len(levels) - 1; i > 0; i-- {
-		if !safeDiff(levels[i], levels[i-1]) {
+		if !safeDiff(levels[i-1], levels[i]) {
 			badLevelCount++
 			continue
 		}
-		if !cmp(levels[i], levels[i-1]) {
+		if !cmp(levels[i-1], levels[i]) {
 			badLevelCount++
 			continue
 		}
@@ -90,9 +90,9 @@ func safeDiff(i, j int) bool {
 }
 
 func strictlyIncreasing(i, j int) bool {
-	return i < j
+	return i > j
 }
 
 func strictlyDecreasing(i, j int) bool {
-	return i > j
+	return i < j
 }
