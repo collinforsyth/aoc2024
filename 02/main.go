@@ -15,6 +15,7 @@ func main() {
 		fmt.Println(err)
 		return
 	}
+	defer inputFile.Close()
 	input := parseInput(inputFile)
 	if err := partOne(input); err != nil {
 		fmt.Println(err)
@@ -59,7 +60,7 @@ func partTwo(reports [][]int) error {
 			sum++
 		}
 	}
-	fmt.Println("Part 1: ", sum)
+	fmt.Println("Part 2: ", sum)
 	return nil
 }
 
@@ -71,16 +72,11 @@ func isSafe(levels []int, toleration int) bool {
 	}
 	badLevelCount := 0
 	for i := len(levels) - 1; i > 0; i-- {
-		if !safeDiff(levels[i-1], levels[i]) {
-			badLevelCount++
-			continue
-		}
-		if !cmp(levels[i-1], levels[i]) {
+		if !safeDiff(levels[i-1], levels[i]) || !cmp(levels[i-1], levels[i]) {
 			badLevelCount++
 			continue
 		}
 	}
-	// return early if possible
 	return badLevelCount <= toleration
 }
 
