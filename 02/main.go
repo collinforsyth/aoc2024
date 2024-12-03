@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"io"
 	"os"
+	"slices"
 	"strings"
 )
 
@@ -17,15 +18,8 @@ func main() {
 	}
 	defer inputFile.Close()
 	input := parseInput(inputFile)
-	if err := partOne(input); err != nil {
-		fmt.Println(err)
-		return
-	}
-	if err := partTwo(input); err != nil {
-		fmt.Println(err)
-		return
-	}
-
+	partOne(input)
+	partTwo(input)
 }
 
 func parseInput(inputFile io.Reader) [][]int {
@@ -42,42 +36,47 @@ func parseInput(inputFile io.Reader) [][]int {
 	return res
 }
 
-func partOne(reports [][]int) error {
+func partOne(reports [][]int) {
 	sum := 0
 	for _, report := range reports {
-		if isSafe(report, 0) {
+		if isSafe(report) {
 			sum++
 		}
 	}
 	fmt.Println("Part 1: ", sum)
-	return nil
 }
 
-func partTwo(reports [][]int) error {
+func partTwo(reports [][]int) {
 	sum := 0
 	for _, report := range reports {
-		if isSafe(report, 1) {
+		if isSafe(report) {
 			sum++
+		} else {
+			// brute force all possible combinations
+			for i := range report {
+				tmp := slices.Delete(slices.Clone(report), i, i+1)
+				if isSafe(tmp) {
+					sum++
+					break
+				}
+			}
 		}
 	}
 	fmt.Println("Part 2: ", sum)
-	return nil
 }
 
-func isSafe(levels []int, toleration int) bool {
+func isSafe(levels []int) bool {
 	cmp := strictlyIncreasing
 	// peek to see if the levels should be in ascending or descending order
-	if levels[0]-levels[1] < 0 {
+	if levels[0]-levels[1] > 0 {
 		cmp = strictlyDecreasing
 	}
-	badLevelCount := 0
 	for i := len(levels) - 1; i > 0; i-- {
 		if !safeDiff(levels[i-1], levels[i]) || !cmp(levels[i-1], levels[i]) {
-			badLevelCount++
-			continue
+			return false
 		}
 	}
-	return badLevelCount <= toleration
+	return true
 }
 
 func safeDiff(i, j int) bool {
@@ -86,9 +85,9 @@ func safeDiff(i, j int) bool {
 }
 
 func strictlyIncreasing(i, j int) bool {
-	return i > j
+	return i < j
 }
 
 func strictlyDecreasing(i, j int) bool {
-	return i < j
+	return i > j
 }
