@@ -4,18 +4,17 @@ import (
 	"collinforsyth/aoc2024/util"
 	"fmt"
 	"log"
-	"os"
 	"regexp"
 )
 
 func main() {
-	bytes, err := os.ReadFile("03/input.txt")
-	input := string(bytes)
+	input, err := util.ReadInput("03/input.txt")
 	if err != nil {
 		log.Println(err)
+		return
 	}
-	partOne(input)
-	partTwo(input)
+	partOne(input.String())
+	partTwo(input.String())
 }
 
 func partOne(input string) {
