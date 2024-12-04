@@ -18,11 +18,11 @@ func main() {
 	fmt.Println("Part 1: ", partOne(parsed))
 }
 
-func parseInput(input []byte) [][]byte {
-	b := make([][]byte, 0)
+func parseInput(input []byte) [][]rune {
+	b := make([][]rune, 0)
 	sc := bufio.NewScanner(bytes.NewReader(input))
 	for sc.Scan() {
-		b = append(b, sc.Bytes())
+		b = append(b, []rune(string(sc.Bytes())))
 	}
 	return b
 }
@@ -42,14 +42,11 @@ var directions = []point{
 	{1, -1},  // right-down
 }
 
-func partOne(input [][]byte) int {
+func partOne(input [][]rune) int {
 	sum := 0
-	word := []byte{'X', 'M', 'A', 'S'}
+	word := []rune{'X', 'M', 'A', 'S'}
 	for i := range input {
 		for j := range input[i] {
-			if input[i][j] != 'X' {
-				continue
-			}
 			for _, d := range directions {
 				if search(input, word, i, j, d) {
 					sum++
@@ -60,22 +57,18 @@ func partOne(input [][]byte) int {
 	return sum
 }
 
-func search(input [][]byte, word []byte, i, j int, d point) bool {
-	k := 0
-	for input[i][j] == word[k] {
-		if k == len(word)-1 {
-			return true
-		}
-		i, j = i+d.y, j+d.x
-		if !check(input, i, j) {
+func search(input [][]rune, word []rune, i, j int, d point) bool {
+	for k := 0; k < len(word); k++ {
+		if !check(input, i, j) || input[i][j] != word[k] {
 			return false
 		}
-		k++
+		i += d.y
+		j += d.x
 	}
-	return false
+	return true
 }
 
-func check(input [][]byte, i, j int) bool {
+func check(input [][]rune, i, j int) bool {
 	if i < 0 || j < 0 || i >= len(input) || j >= len(input[i]) {
 		return false
 	}
