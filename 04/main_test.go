@@ -25,71 +25,91 @@ MXMXAXMASX`)
 func TestPart1(t *testing.T) {
 	testCases := []struct {
 		name      string
+		count     int
 		input     []byte
 		direction point
 	}{
 		{
-			name: "right",
+			name:  "right",
+			count: 1,
 			input: []byte(`....
 XMAS
 ....
 ....`),
 		},
 		{
-			name: "left",
+			name:  "left",
+			count: 1,
 			input: []byte(`....
 SAMX
 ....
 ....`),
 		},
 		{
-			name: "down",
+			name:  "down",
+			count: 1,
 			input: []byte(`.X..
 .M..
 .A..
 .S..`),
 		},
 		{
-			name: "up",
+			name:  "up",
+			count: 1,
 			input: []byte(`.S..
 .A..
 .M..
 .X..`),
 		},
 		{
-			name: "diagonal/down-right",
+			name:  "diagonal/down-right",
+			count: 1,
 			input: []byte(`X...
 .M..
 ..A.
 ...S`),
 		},
 		{
-			name: "diagonal/down-left",
+			name:  "diagonal/down-left",
+			count: 1,
 			input: []byte(`...X
 ..M.
 .A..
 S...`),
 		},
 		{
-			name: "diagonal/up-right",
+			name:  "diagonal/up-right",
+			count: 1,
 			input: []byte(`...S
 ..A.
 .M..
 X...`),
 		},
 		{
-			name: "diagonal/up-left",
+			name:  "diagonal/up-left",
+			count: 1,
 			input: []byte(`S...
 .A..
 ..M.
 ...X`),
+		},
+		{
+			name:  "multiple",
+			count: 8,
+			input: []byte(`S..S..S
+.A.A.A.
+..MMM..
+SAMXMAS
+..MMM..
+.A.A.A.
+S..S..S`),
 		},
 	}
 
 	for _, tc := range testCases {
 		t.Run(tc.name, func(t *testing.T) {
 			parsed := parseInput(tc.input)
-			assert.Equal(t, 1, partOne(parsed))
+			assert.Equal(t, tc.count, partOne(parsed))
 		})
 	}
 }

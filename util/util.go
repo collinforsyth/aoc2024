@@ -20,7 +20,6 @@ func ReadInput(file string) (*Input, error) {
 	if err != nil {
 	}
 	buf := bytes.NewBuffer(b)
-	buf.Write(b)
 	return &Input{input: buf}, nil
 }
 
