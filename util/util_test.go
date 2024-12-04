@@ -1,6 +1,7 @@
 package util
 
 import (
+	"bytes"
 	"testing"
 
 	"gotest.tools/assert"
@@ -23,7 +24,9 @@ line 3`,
 
 	for _, tc := range testCases {
 		t.Run(tc.name, func(t *testing.T) {
-			input := Input{input: tc.bytes}
+			b := new(bytes.Buffer)
+			b.WriteString(tc.bytes)
+			input := Input{input: b}
 			i := 0
 			for v := range input.Lines() {
 				assert.Equal(t, tc.want[i], v)

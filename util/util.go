@@ -2,6 +2,7 @@ package util
 
 import (
 	"bufio"
+	"bytes"
 	"iter"
 	"os"
 	"strconv"
@@ -11,22 +12,28 @@ import (
 )
 
 type Input struct {
-	input string
+	input *bytes.Buffer
 }
 
 func ReadInput(file string) (*Input, error) {
-	f, err := os.ReadFile(file)
+	b, err := os.ReadFile(file)
 	if err != nil {
 	}
-	return &Input{input: string(f)}, nil
+	buf := bytes.NewBuffer(b)
+	buf.Write(b)
+	return &Input{input: buf}, nil
 }
 
 func (i *Input) String() string {
-	return i.input
+	return i.input.String()
+}
+
+func (i *Input) Bytes() []byte {
+	return i.input.Bytes()
 }
 
 func (i *Input) Lines() iter.Seq[string] {
-	sc := bufio.NewScanner(strings.NewReader(i.input))
+	sc := bufio.NewScanner(strings.NewReader(i.input.String()))
 	return func(yield func(string) bool) {
 		for sc.Scan() {
 			if !yield(sc.Text()) {
