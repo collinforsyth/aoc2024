@@ -23,6 +23,10 @@ func ReadInput(file string) (*Input, error) {
 	return &Input{input: buf}, nil
 }
 
+func FromBytes(b []byte) *Input {
+	return &Input{input: bytes.NewBuffer(b)}
+}
+
 func (i *Input) String() string {
 	return i.input.String()
 }
