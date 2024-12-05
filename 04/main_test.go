@@ -1,10 +1,14 @@
 package main
 
 import (
+	"collinforsyth/aoc2024/util"
+	"log"
 	"testing"
 
 	"gotest.tools/assert"
 )
+
+var result int
 
 func TestPart1Sample(t *testing.T) {
 	input := []byte(`MMMSXXMASM
@@ -114,6 +118,21 @@ S..S..S`),
 	}
 }
 
+func BenchmarkPart1(b *testing.B) {
+	input, err := util.ReadInput("./input.txt")
+	if err != nil {
+		log.Println(err)
+		return
+	}
+	r := 0
+	parsed := parseInput(input.Bytes())
+	b.ResetTimer()
+	for i := 0; i < b.N; i++ {
+		r = partOne(parsed)
+	}
+	result = r
+}
+
 func TestPart2Sample(t *testing.T) {
 	input := []byte(`.M.S......
 ..A..MSMS.
@@ -127,4 +146,19 @@ M.M.M.M.M.
 ..........`)
 	parsed := parseInput(input)
 	assert.Equal(t, 9, partTwo(parsed))
+}
+
+func BenchmarkPart2(b *testing.B) {
+	input, err := util.ReadInput("./input.txt")
+	if err != nil {
+		log.Println(err)
+		return
+	}
+	parsed := parseInput(input.Bytes())
+	r := 0
+	b.ResetTimer()
+	for i := 0; i < b.N; i++ {
+		r = partTwo(parsed)
+	}
+	result = r
 }

@@ -48,6 +48,9 @@ func partOne(input [][]rune) int {
 	word := []rune{'X', 'M', 'A', 'S'}
 	for i := range input {
 		for j := range input[i] {
+			if input[i][j] != 'X' {
+				continue
+			}
 			for _, d := range directions {
 				if search(input, word, i, j, d) {
 					sum++
