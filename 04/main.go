@@ -16,6 +16,7 @@ func main() {
 	}
 	parsed := parseInput(input.Bytes())
 	fmt.Println("Part 1: ", partOne(parsed))
+	fmt.Println("Part 2: ", partTwo(parsed))
 }
 
 func parseInput(input []byte) [][]rune {
@@ -39,7 +40,7 @@ var directions = []point{
 	{-1, -1}, // left-up
 	{1, 1},   // right-down
 	{-1, 1},  // left-down
-	{1, -1},  // right-down
+	{1, -1},  // right-up
 }
 
 func partOne(input [][]rune) int {
@@ -73,4 +74,32 @@ func check(input [][]rune, i, j int) bool {
 		return false
 	}
 	return true
+}
+
+func partTwo(input [][]rune) int {
+	d1 := []point{
+		{-1, -1}, // left-up
+		{1, 1},   // right-down
+	}
+	d2 := []point{
+		{-1, 1}, // left-down
+		{1, -1}, // right-up
+	}
+	mas := []rune{'M', 'A', 'S'}
+	sum := 0
+	for i := 1; i < len(input)-1; i++ {
+		for j := 1; j < len(input[i])-1; j++ {
+			if input[i][j] == 'A' {
+				if (searchDiagonal(input, mas, i, j, d1[0]) || searchDiagonal(input, mas, i, j, d1[1])) &&
+					(searchDiagonal(input, mas, i, j, d2[0]) || searchDiagonal(input, mas, i, j, d2[1])) {
+					sum++
+				}
+			}
+		}
+	}
+	return sum
+}
+
+func searchDiagonal(input [][]rune, word []rune, i, j int, d point) bool {
+	return search(input, word, i+(-d.y), j+(-d.x), d)
 }

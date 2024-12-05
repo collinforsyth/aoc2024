@@ -113,3 +113,18 @@ S..S..S`),
 		})
 	}
 }
+
+func TestPart2Sample(t *testing.T) {
+	input := []byte(`.M.S......
+..A..MSMS.
+.M.S.MAA..
+..A.ASMSM.
+.M.S.M....
+..........
+S.S.S.S.S.
+.A.A.A.A..
+M.M.M.M.M.
+..........`)
+	parsed := parseInput(input)
+	assert.Equal(t, 9, partTwo(parsed))
+}
