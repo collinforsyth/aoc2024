@@ -4,7 +4,7 @@ import (
 	"collinforsyth/aoc2024/util"
 	"testing"
 
-	"gotest.tools/assert"
+	"github.com/stretchr/testify/assert"
 )
 
 var result int

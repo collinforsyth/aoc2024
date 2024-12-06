@@ -31,8 +31,13 @@ func (i *Input) String() string {
 	return i.input.String()
 }
 
-func (i *Input) Bytes() []byte {
-	return i.input.Bytes()
+func (i *Input) Runes() [][]rune {
+	b := make([][]rune, 0)
+	sc := bufio.NewScanner(bytes.NewReader(i.input.Bytes()))
+	for sc.Scan() {
+		b = append(b, []rune(string(sc.Bytes())))
+	}
+	return b
 }
 
 func (i *Input) Lines() iter.Seq[string] {

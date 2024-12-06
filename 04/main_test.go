@@ -5,7 +5,7 @@ import (
 	"log"
 	"testing"
 
-	"gotest.tools/assert"
+	"github.com/stretchr/testify/assert"
 )
 
 var result int
@@ -22,7 +22,7 @@ SAXAMASAAA
 MAMMMXMMMM
 MXMXAXMASX`)
 
-	parsed := parseInput(input)
+	parsed := util.FromBytes(input).Runes()
 	assert.Equal(t, 18, partOne(parsed))
 }
 
@@ -112,7 +112,7 @@ S..S..S`),
 
 	for _, tc := range testCases {
 		t.Run(tc.name, func(t *testing.T) {
-			parsed := parseInput(tc.input)
+			parsed := util.FromBytes(tc.input).Runes()
 			assert.Equal(t, tc.count, partOne(parsed))
 		})
 	}
@@ -125,7 +125,7 @@ func BenchmarkPart1(b *testing.B) {
 		return
 	}
 	r := 0
-	parsed := parseInput(input.Bytes())
+	parsed := input.Runes()
 	b.ResetTimer()
 	for i := 0; i < b.N; i++ {
 		r = partOne(parsed)
@@ -144,7 +144,7 @@ S.S.S.S.S.
 .A.A.A.A..
 M.M.M.M.M.
 ..........`)
-	parsed := parseInput(input)
+	parsed := util.FromBytes(input).Runes()
 	assert.Equal(t, 9, partTwo(parsed))
 }
 
@@ -154,8 +154,8 @@ func BenchmarkPart2(b *testing.B) {
 		log.Println(err)
 		return
 	}
-	parsed := parseInput(input.Bytes())
 	r := 0
+	parsed := input.Runes()
 	b.ResetTimer()
 	for i := 0; i < b.N; i++ {
 		r = partTwo(parsed)

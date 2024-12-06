@@ -1,8 +1,6 @@
 package main
 
 import (
-	"bufio"
-	"bytes"
 	"collinforsyth/aoc2024/util"
 	"fmt"
 	"log"
@@ -14,18 +12,9 @@ func main() {
 		log.Println(err)
 		return
 	}
-	parsed := parseInput(input.Bytes())
+	parsed := input.Runes()
 	fmt.Println("Part 1: ", partOne(parsed))
 	fmt.Println("Part 2: ", partTwo(parsed))
-}
-
-func parseInput(input []byte) [][]rune {
-	b := make([][]rune, 0)
-	sc := bufio.NewScanner(bytes.NewReader(input))
-	for sc.Scan() {
-		b = append(b, []rune(string(sc.Bytes())))
-	}
-	return b
 }
 
 type point struct {
