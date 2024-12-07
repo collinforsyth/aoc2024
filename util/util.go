@@ -31,6 +31,10 @@ func (i *Input) String() string {
 	return i.input.String()
 }
 
+func (i *Input) Clone() *Input {
+	return &Input{input: bytes.NewBuffer(i.input.Bytes())}
+}
+
 func (i *Input) Runes() [][]rune {
 	b := make([][]rune, 0)
 	sc := bufio.NewScanner(bytes.NewReader(i.input.Bytes()))
