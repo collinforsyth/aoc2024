@@ -3,8 +3,9 @@ package main
 import (
 	"collinforsyth/aoc2024/util"
 	"fmt"
+	"iter"
 	"log"
-	"strconv"
+	"math"
 	"strings"
 	"unicode"
 )
@@ -45,8 +46,7 @@ func parseInput(input *util.Input) []equation {
 func partOne(input []equation) int {
 	res := 0
 	for _, eq := range input {
-		combinations := product([]string{"+", "*"}, len(eq.factors)-1)
-		for _, c := range combinations {
+		for c := range product([]string{"+", "*"}, len(eq.factors)-1) {
 			sum := eq.factors[0]
 			for i := 1; i < len(eq.factors); i++ {
 				switch c[i-1] {
@@ -54,31 +54,6 @@ func partOne(input []equation) int {
 					sum += eq.factors[i]
 				case "*":
 					sum *= eq.factors[i]
-				}
-				if sum == eq.value {
-					res += eq.value
-					break
-				}
-			}
-		}
-	}
-	return res
-}
-
-func partTwo(input []equation) int {
-	res := 0
-	for _, eq := range input {
-		combinations := product([]string{"+", "*", "||"}, len(eq.factors)-1)
-		for _, c := range combinations {
-			sum := eq.factors[0]
-			for i := 1; i < len(eq.factors); i++ {
-				switch c[i-1] {
-				case "+":
-					sum += eq.factors[i]
-				case "*":
-					sum *= eq.factors[i]
-				case "||":
-					sum = util.MustAtoi(strconv.Itoa(sum) + strconv.Itoa(eq.factors[i]))
 				}
 			}
 			if sum == eq.value {
@@ -90,28 +65,63 @@ func partTwo(input []equation) int {
 	return res
 }
 
-// calculate all possible combinations of operators
-func product[T any](vals []T, k int) [][]T {
-	indexes := make([]int, k)
-	var ps [][]T
-
-	for indexes != nil {
-		p := make([]T, k)
-		for i, x := range indexes {
-			p[i] = vals[x]
-		}
-		for i := len(indexes) - 1; i >= 0; i-- {
-			indexes[i]++
-			if indexes[i] < len(vals) {
+func partTwo(input []equation) int {
+	res := 0
+	for _, eq := range input {
+		for c := range product([]string{"+", "*", "||"}, len(eq.factors)-1) {
+			sum := eq.factors[0]
+			for i := 1; i < len(eq.factors); i++ {
+				switch c[i-1] {
+				case "+":
+					sum += eq.factors[i]
+				case "*":
+					sum *= eq.factors[i]
+				case "||":
+					// sum = util.MustAtoi(strconv.Itoa(sum) + strconv.Itoa(eq.factors[i]))
+					sum = concat(sum, eq.factors[i])
+				}
+			}
+			if sum == eq.value {
+				res += eq.value
 				break
 			}
-			indexes[i] = 0
-			if i <= 0 {
-				indexes = nil
-				break
-			}
 		}
-		ps = append(ps, p)
 	}
-	return ps
+	return res
+}
+
+func concat(a, b int) int {
+	i, tmp := 0, b
+	for tmp != 0 {
+		tmp /= 10
+		i++
+	}
+	return a*int(math.Pow10(i)) + b
+}
+
+func product[T any](vals []T, k int) iter.Seq[[]T] {
+	indexes := make([]int, k)
+	p := make([]T, k)
+	// a = a[:0] clear slice
+	return func(yield func([]T) bool) {
+		for indexes != nil {
+			for i, x := range indexes {
+				p[i] = vals[x]
+			}
+			for i := len(indexes) - 1; i >= 0; i-- {
+				indexes[i]++
+				if indexes[i] < len(vals) {
+					break
+				}
+				indexes[i] = 0
+				if i <= 0 {
+					indexes = nil
+					break
+				}
+			}
+			if !yield(p) {
+				return
+			}
+		}
+	}
 }
