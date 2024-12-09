@@ -12,7 +12,10 @@ func main() {
 		fmt.Println(err)
 		return
 	}
-	fmt.Println("Part 1: ", partOne(input.String()))
+	diskMap := parseInput(input.String())
+	fmt.Println("Part 1: ", partOne(diskMap))
+	diskMap = parseInput(input.String())
+	fmt.Println("Part 2: ", partTwo(diskMap))
 }
 
 type layout struct {
@@ -21,7 +24,7 @@ type layout struct {
 	free  []int
 }
 
-func partOne(input string) int {
+func parseInput(input string) []layout {
 	diskMap := make([]layout, 0)
 	i := 0
 	for i < len(input)-1 {
@@ -45,7 +48,11 @@ func partOne(input string) int {
 		diskMap = append(diskMap, l)
 	}
 
-	i = 0
+	return diskMap
+}
+
+func partOne(diskMap []layout) int {
+	i := 0
 	j := len(diskMap) - 1
 	k, l := 0, len(diskMap[j].files)-1
 	for i < j {
@@ -75,18 +82,54 @@ func partOne(input string) int {
 		l--
 	}
 
-	i = 0
+	return checksum(diskMap)
+}
+
+func partTwo(diskMap []layout) int {
+	for j := len(diskMap) - 1; j >= 0; j-- {
+		// if we can't fit the files into the free space,
+		// move to the next disk
+		for i := 0; i < j; i++ {
+			free := free(diskMap[i].free)
+			if len(diskMap[j].files) > free {
+				continue
+			}
+			l := len(diskMap[i].free) - free
+			for k := 0; k < len(diskMap[j].files); k++ {
+				diskMap[i].free[l], diskMap[j].files[k] = diskMap[j].files[k], diskMap[i].free[l]
+				l++
+			}
+			break
+		}
+	}
+	return checksum(diskMap)
+}
+
+func free(l []int) int {
+	c := 0
+	for _, f := range l {
+		if f == -1 {
+			c++
+		}
+	}
+	return c
+}
+
+func checksum(diskMap []layout) int {
+	i := 0
 	sum := 0
-	for _, d := range diskMap {
-		for _, f := range d.files {
+	for _, l := range diskMap {
+		for _, f := range l.files {
 			if f == -1 {
+				i++
 				continue
 			}
 			sum += (f * i)
 			i++
 		}
-		for _, f := range d.free {
+		for _, f := range l.free {
 			if f == -1 {
+				i++
 				continue
 			}
 			sum += (f * i)

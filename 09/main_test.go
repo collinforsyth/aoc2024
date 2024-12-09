@@ -8,8 +8,13 @@ import (
 
 func TestPart1Sample(t *testing.T) {
 	input := "12345"
-	partOne(input)
+	partOne(parseInput(input))
 
 	input2 := "2333133121414131402"
-	assert.Equal(t, 1928, partOne(input2))
+	assert.Equal(t, 1928, partOne(parseInput(input2)))
+}
+
+func TestPart2Sample(t *testing.T) {
+	input := "2333133121414131402"
+	assert.Equal(t, 2858, partTwo(parseInput(input)))
 }
