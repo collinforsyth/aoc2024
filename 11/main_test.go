@@ -13,11 +13,3 @@ func TestPart1Sample(t *testing.T) {
 	parsed = parseInput(input)
 	assert.Equal(t, 55312, partOne(parsed, 25))
 }
-
-func TestSeries(t *testing.T) {
-	t.Skip("skipping series test - for debugging")
-	for i := range 10 {
-		input := []int{0}
-		t.Logf("i=%d, sum=%d", i, partOne(input, i))
-	}
-}

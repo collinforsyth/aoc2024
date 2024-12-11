@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"log"
 	"math"
-	"slices"
 	"strings"
 )
 
@@ -16,33 +15,39 @@ func main() {
 	}
 	parsed := parseInput(input.String())
 	fmt.Println("Part 1: ", partOne(parsed, 25))
+	parsed = parseInput(input.String())
+	fmt.Println("Part 2: ", partOne(parsed, 75))
 }
 
-func parseInput(input string) []int {
-	a := make([]int, 0)
+func parseInput(input string) map[int]int {
+	m := make(map[int]int, 0)
 	for _, s := range strings.Fields(input) {
-		a = append(a, util.MustAtoi(s))
+		m[util.MustAtoi(s)]++
 	}
-	return a
+	return m
 }
 
-func partOne(input []int, blinks int) int {
+func partOne(input map[int]int, blinks int) int {
 	for range blinks {
-		for i := 0; i < len(input); i++ {
-			if input[i] == 0 {
-				input[i] = 1
-				continue
+		curr := make(map[int]int)
+		for v, c := range input {
+			if v == 0 {
+				curr[1] += c
+			} else if digits(v)%2 == 0 {
+				a, b := split(v, digits(v))
+				curr[a] += c
+				curr[b] += c
+			} else {
+				curr[v*2024] += c
 			}
-			if d := digits(input[i]); d%2 == 0 {
-				a, b := split(input[i], d)
-				input = slices.Replace(input, i, i+1, a, b)
-				i++
-				continue
-			}
-			input[i] = input[i] * 2024
 		}
+		input = curr
 	}
-	return len(input)
+	sum := 0
+	for _, c := range input {
+		sum += c
+	}
+	return sum
 }
 
 // https://stackoverflow.com/a/68124773
