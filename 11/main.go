@@ -14,9 +14,9 @@ func main() {
 		log.Fatal(err)
 	}
 	parsed := parseInput(input.String())
-	fmt.Println("Part 1: ", partOne(parsed, 25))
+	fmt.Println("Part 1: ", solve(parsed, 25))
 	parsed = parseInput(input.String())
-	fmt.Println("Part 2: ", partOne(parsed, 75))
+	fmt.Println("Part 2: ", solve(parsed, 75))
 }
 
 func parseInput(input string) map[int]int {
@@ -27,7 +27,7 @@ func parseInput(input string) map[int]int {
 	return m
 }
 
-func partOne(input map[int]int, blinks int) int {
+func solve(input map[int]int, blinks int) int {
 	for range blinks {
 		curr := make(map[int]int)
 		for v, c := range input {
