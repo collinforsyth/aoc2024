@@ -29,7 +29,7 @@ func parseInput(input string) map[int]int {
 
 func solve(input map[int]int, blinks int) int {
 	for range blinks {
-		curr := make(map[int]int)
+		curr := make(map[int]int, len(input))
 		for v, c := range input {
 			if v == 0 {
 				curr[1] += c
