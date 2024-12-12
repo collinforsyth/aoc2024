@@ -33,8 +33,8 @@ func solve(input map[int]int, blinks int) int {
 		for v, c := range input {
 			if v == 0 {
 				curr[1] += c
-			} else if digits(v)%2 == 0 {
-				a, b := split(v, digits(v))
+			} else if d := digits(v); d%2 == 0 {
+				a, b := split(v, d)
 				curr[a] += c
 				curr[b] += c
 			} else {
