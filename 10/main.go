@@ -62,30 +62,10 @@ var directions = []point{
 	{-1, 0},
 }
 
-type Queue[T any] []T
-
-func (q *Queue[T]) Push(v T) {
-	*q = append(*q, v)
-}
-
-func (q *Queue[T]) Pop() (T, bool) {
-	var v T
-	if len(*q) == 0 {
-		return v, false
-	}
-	v = (*q)[0]
-	*q = (*q)[1:]
-	return v, true
-}
-
-func (q Queue[T]) Len() int {
-	return len(q)
-}
-
 func bfs(grid [][]int, p point, markSeen bool) int {
 	seen := make(map[point]bool)
 	sum := 0
-	q := &Queue[point]{}
+	q := util.NewQueue[point]()
 	seen[p] = true
 	q.Push(p)
 	for q.Len() > 0 {
