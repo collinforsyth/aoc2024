@@ -27,7 +27,7 @@ type equation struct {
 
 func parseInput(input *util.Input) []equation {
 	equations := make([]equation, 0)
-	for line := range input.Lines() {
+	for _, line := range input.Lines() {
 		fields := strings.FieldsFunc(line, func(r rune) bool {
 			return unicode.IsSpace(r) || r == ':'
 		})

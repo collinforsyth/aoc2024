@@ -28,7 +28,7 @@ func parseInput(input *util.Input) instructions {
 		rules:   make(map[int][]int),
 		updates: make([][]int, 0),
 	}
-	for line := range input.Lines() {
+	for _, line := range input.Lines() {
 		fields := strings.FieldsFunc(line, func(r rune) bool {
 			return r == ',' || r == '|'
 		})

@@ -44,13 +44,15 @@ func (i *Input) Runes() [][]rune {
 	return b
 }
 
-func (i *Input) Lines() iter.Seq[string] {
+func (i *Input) Lines() iter.Seq2[int, string] {
 	sc := bufio.NewScanner(strings.NewReader(i.input.String()))
-	return func(yield func(string) bool) {
+	j := 0
+	return func(yield func(int, string) bool) {
 		for sc.Scan() {
-			if !yield(sc.Text()) {
+			if !yield(j, sc.Text()) {
 				break
 			}
+			j++
 		}
 	}
 }
@@ -64,6 +66,14 @@ func Abs[T constraints.Signed](x T) T {
 
 func MustAtoi(s string) int {
 	n, err := strconv.Atoi(s)
+	if err != nil {
+		panic(err)
+	}
+	return n
+}
+
+func MustFloat(s string) float64 {
+	n, err := strconv.ParseFloat(s, 64)
 	if err != nil {
 		panic(err)
 	}
