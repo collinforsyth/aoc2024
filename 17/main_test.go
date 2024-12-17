@@ -44,3 +44,8 @@ func TestPart1_5(t *testing.T) {
 	partOne(registers, opcodes)
 	assert.Equal(t, 44354, registers[1])
 }
+
+func TestPart2(t *testing.T) {
+	program := []int{0, 3, 5, 4, 3, 0}
+	assert.Equal(t, 117440, partTwo(program))
+}

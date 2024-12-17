@@ -3,8 +3,8 @@ package main
 import (
 	"collinforsyth/aoc2024/util"
 	"fmt"
-	"math"
 	"regexp"
+	"slices"
 	"strings"
 )
 
@@ -14,8 +14,9 @@ func main() {
 		fmt.Println(err)
 		return
 	}
-	opcodes, registers := parseInput(input.String())
-	fmt.Println("Part 1: ", output(partOne(opcodes, registers)))
+	registers, program := parseInput(input.String())
+	fmt.Println("Part 1: ", output(partOne(registers, program)))
+	fmt.Println("Part 2: ", partTwo(program))
 }
 
 func parseInput(input string) ([]int, []int) {
@@ -39,51 +40,67 @@ func parseInput(input string) ([]int, []int) {
 	return registers, opCodes
 }
 
-// So, the program 0,1,2,3 would run the
-// instruction whose opcode is 0 and pass it
-// the operand 1, then run the instruction having
-// opcode 2 and pass it the operand 3, then halt.
 func partOne(registers []int, opCodes []int) []int {
-	stdOut := make([]int, 0)
-	pc := 0
-	for {
-		// if we're ever at the end, halt
-		// NOTE: assuming end is i+1 since we need 2
-		if pc >= len(opCodes)-1 {
-			break
+	c := computer{registers: registers, program: opCodes}
+	c.run()
+	return c.stdout
+}
+
+func partTwo(program []int) int {
+	i := 0
+	for p := len(program) - 1; p >= 0; p-- {
+		i <<= 3
+		for !slices.Equal(run([]int{i, 0, 0}, program), program[p:]) {
+			i++
 		}
-		switch opCodes[pc] {
-		case 0:
-			d := int(math.Pow(2, float64(combo(opCodes[pc+1], registers))))
-			n := registers[0]
-			registers[0] = n / d
-		case 1:
-			registers[1] = registers[1] ^ opCodes[pc+1]
-		case 2:
-			c := combo(opCodes[pc+1], registers)
-			registers[1] = c % 8
-		case 3:
-			if registers[0] != 0 {
-				pc = opCodes[pc+1]
-				continue
-			}
-		case 4:
-			registers[1] = registers[1] ^ registers[2]
-		case 5:
-			c := combo(opCodes[pc+1], registers) % 8
-			stdOut = append(stdOut, c)
-		case 6:
-			d := int(math.Pow(2, float64(combo(opCodes[pc+1], registers))))
-			n := registers[0]
-			registers[1] = n / d
-		case 7:
-			d := int(math.Pow(2, float64(combo(opCodes[pc+1], registers))))
-			n := registers[0]
-			registers[2] = n / d
-		}
-		pc += 2
+		fmt.Println(i, program[p:])
 	}
-	return stdOut
+	return i
+}
+
+type computer struct {
+	registers []int
+	program   []int
+	pc        int
+	stdout    []int
+}
+
+func run(registers []int, program []int) []int {
+	c := computer{registers: registers, program: program}
+	c.run()
+	return c.stdout
+}
+
+func (c *computer) run() {
+	for c.pc < len(c.program) {
+		c.exec()
+	}
+}
+
+func (c *computer) exec() {
+	operand := c.program[c.pc+1]
+	switch c.program[c.pc] {
+	case 0:
+		c.registers[0] = c.registers[0] >> combo(operand, c.registers)
+	case 1:
+		c.registers[1] = c.registers[1] ^ operand
+	case 2:
+		c.registers[1] = combo(operand, c.registers) % 8
+	case 3:
+		if c.registers[0] != 0 {
+			c.pc = operand
+			return
+		}
+	case 4:
+		c.registers[1] = c.registers[1] ^ c.registers[2]
+	case 5:
+		c.stdout = append(c.stdout, combo(operand, c.registers)%8)
+	case 6:
+		c.registers[1] = c.registers[0] >> combo(operand, c.registers)
+	case 7:
+		c.registers[2] = c.registers[0] >> combo(operand, c.registers)
+	}
+	c.pc += 2
 }
 
 func combo(i int, registers []int) int {
@@ -99,7 +116,7 @@ func combo(i int, registers []int) int {
 	case 7:
 		panic("reserved")
 	default:
-		panic("unknownw combo")
+		panic("unknown combo")
 	}
 }
 
