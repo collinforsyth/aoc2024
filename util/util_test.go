@@ -28,7 +28,7 @@ line 3`,
 			b.WriteString(tc.bytes)
 			input := Input{input: b}
 			i := 0
-			for v := range input.Lines() {
+			for _, v := range input.Lines() {
 				assert.Equal(t, tc.want[i], v)
 				i++
 			}
